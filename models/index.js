@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const eventModel = require("./event");
+const userModel = require("./user");
 
 //Config
 const mongoURI = "mongodb://localhost:27017/project3Database";
@@ -14,4 +16,4 @@ db.on("error", (err) => console.log(err.message + " is Mongod not running?"));
 db.on("connected", () => console.log("mongo connected: ", mongoURI));
 db.on("disconnected", () => console.log("mongo disconnected"));
 
-module.exports = {};
+module.exports = { eventModel, userModel };
