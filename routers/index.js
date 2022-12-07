@@ -23,29 +23,6 @@ app.get("/", (req, res) => {
 } */
 
 app.use("/auth", authRouter);
-// app.post("/signup", (req, res) => {
-//   //get data from req.body
-//   //create new User.
-//   const userInfor = req.body;
-//   const newUser = new userModel(userInfor);
-//   newUser.save((err) => {
-//     if (err) {
-//       const errorObj = { errCode: err.code, errMessage: "" };
-//       switch (err.code) {
-//         case 11000: //"name" or "email" already exist.
-//           const key = Object.keys(err.keyValue)[0];
-//           errorObj.errMessage = `'${err.keyValue[key]}' already exist. Select another ${key}.`;
-//           // console.log(errorObj, err);
-//           res.status(httpStatus.CONFLICT).json(errorObj); //409 - CONFLICT
-//           return;
-
-//         default:
-//           res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
-//       }
-//     }
-//     res.sendStatus(httpStatus.CREATED); // 201 - CREATED
-//   });
-// });
 
 //"process.env.PORT" is for use in cyclic, no need to define it in .env
 app.listen(process.env.PORT || 4000, () => {
