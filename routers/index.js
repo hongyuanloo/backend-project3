@@ -2,6 +2,8 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 
+const { router: authRouter } = require("./auth-router");
+
 //https://www.stackhawk.com/blog/react-cors-guide-what-it-is-and-how-to-enable-it/
 const corsOptions = {
   origin: "http://localhost:3001" || "http://localhost:3000",
@@ -13,6 +15,14 @@ app.use(express.json()); // parse req.body with JSON payload to JS object
 app.get("/", (req, res) => {
   res.json({ name: "testing" });
 });
+
+/*{
+    "name": "Loo",
+    "email": "loo@hotmail.com",
+    "password": "123"
+} */
+
+app.use("/auth", authRouter);
 
 //"process.env.PORT" is for use in cyclic, no need to define it in .env
 app.listen(process.env.PORT || 4000, () => {

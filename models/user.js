@@ -4,8 +4,8 @@ const { ROLES } = require("../constants");
 
 const userSchema = new Schema(
   {
-    name: { type: String, required: true, unique: true },
-    email: { type: String, required: true, unique: true },
+    name: { type: String, required: true, unique: true, lowercase: true },
+    email: { type: String, required: true, unique: true, lowercase: true },
     password: { type: String, required: true },
     savedEvents: [{ type: Schema.Types.ObjectId, ref: "Event" }],
     role: { type: String, default: ROLES.USER }, //admin or user
@@ -13,6 +13,6 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
-const User = mongoose.model("User", userSchema);
+const userModal = mongoose.model("user", userSchema);
 
-module.exports = Show;
+module.exports = userModal;
