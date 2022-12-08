@@ -1,6 +1,10 @@
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
+const {
+  REFRESH_TOKEN_LIFESPAN,
+  ACCESS_TOKEN_LIFESPAN,
+} = require("../constants");
 
 async function hashPassword(password) {
   //return hashed password
@@ -37,4 +41,47 @@ async function verifyJWTAccessToken(token) {
   }
 }
 
-module.exports = { hashPassword, comparePassword, verifyJWTAccessToken };
+async function verifyJWTRefreshToken(token) {
+  try {
+    //return decoded payload object
+    return jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+  } catch (err) {
+    throw err;
+  }
+}
+
+function generateTokenPayload(userObj) {
+  // return standard token payload object
+  const { name, role } = userObj;
+  return { name, role };
+}
+
+function generateAccessToken(tokenPayload) {
+  // generate token based on result of "generateTokenPayload(userObj)"
+  return jwt.sign(tokenPayload, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: ACCESS_TOKEN_LIFESPAN,
+  });
+}
+
+function generateRefreshToken(tokenPayload) {
+  // generate token based on result of "generateTokenPayload(userObj)"
+  return jwt.sign(tokenPayload, process.env.REFRESH_TOKEN_SECRET, {
+    expiresIn: REFRESH_TOKEN_LIFESPAN,
+  });
+}
+
+function isTokenExpired(tokenExpiredAt_seconds) {
+  const currTime = Math.floor(Date.now() / 1000); // in seconds
+  return currTime - tokenExpiredAt_seconds > 0 ? true : false;
+}
+
+module.exports = {
+  hashPassword,
+  comparePassword,
+  verifyJWTAccessToken,
+  verifyJWTRefreshToken,
+  generateTokenPayload,
+  generateAccessToken,
+  generateRefreshToken,
+  isTokenExpired,
+};

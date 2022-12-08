@@ -1,7 +1,14 @@
 const { userModel } = require("../models");
 const httpStatus = require("http-status");
-const { hashPassword, comparePassword } = require("../services/auth-service");
-const jwt = require("jsonwebtoken");
+const {
+  hashPassword,
+  comparePassword,
+  generateTokenPayload,
+  verifyJWTRefreshToken,
+  generateAccessToken,
+  generateRefreshToken,
+  isTokenExpired,
+} = require("../services/auth-service");
 
 async function signup(req, res) {
   //create new User obj.
@@ -65,22 +72,41 @@ async function login(req, res) {
     if (!passwordOK) return res.sendStatus(httpStatus.FORBIDDEN); //403
 
     //generate tokenPayload
-    const { name, role } = foundUser;
-    const tokenPayload = { name, role };
+    const tokenPayload = generateTokenPayload(foundUser);
 
-    //generate accessToken and refreshToken
-    const accessToken = jwt.sign(tokenPayload, process.env.ACCESS_TOKEN_SECRET);
-    const refreshToken = jwt.sign(
-      tokenPayload,
-      process.env.REFRESH_TOKEN_SECRET
-    );
+    //generate accessToken and refreshToken generateRefreshToken
+    const accessToken = generateAccessToken(tokenPayload);
+    const refreshToken = generateRefreshToken(tokenPayload);
 
-    //generate accessToken and refreshToken
-    // req.user = tokenPayload;
     res.status(httpStatus.OK).json({ accessToken, refreshToken }); //200
   } catch (err) {
     res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
   }
 }
 
-module.exports = { signup, login };
+async function getNewAccessToken(req, res) {
+  try {
+    // extract token
+    const bearer_Token = req.headers.authorization;
+    const refreshToken = bearer_Token.split(" ")[1];
+
+    //decoded decoded payload object
+    const userObj = await verifyJWTRefreshToken(refreshToken);
+
+    // check if refreshToken has expired.
+    if (isTokenExpired(userObj.exp)) {
+      return res.sendStatus(httpStatus.UNAUTHORIZED);
+    }
+
+    // if token not expired, get new tokenPayload
+    const tokenPayload = generateTokenPayload(userObj);
+
+    //generate new accessToken
+    const accessToken = generateAccessToken(tokenPayload);
+    res.status(httpStatus.OK).json({ accessToken }); //200
+  } catch (err) {
+    res.sendStatus(httpStatus.UNAUTHORIZED); //401
+  }
+}
+
+module.exports = { signup, login, getNewAccessToken };

@@ -2,7 +2,6 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const { authenticateToken } = require("../middlewares/auth-middleware");
-
 const { router: authRouter } = require("./auth-router");
 
 //https://www.stackhawk.com/blog/react-cors-guide-what-it-is-and-how-to-enable-it/
@@ -19,9 +18,9 @@ app.use("/auth", authRouter);
 //middleware to authenticate accessToken
 app.use(authenticateToken);
 
-app.get("/", (req, res) => {
-  console.log("req.user", req.user);
-  res.json({ name: "testing" });
+app.get("/", async (req, res) => {
+  // console.log("req.user", req.user);
+  res.send("testing..");
 });
 
 //"process.env.PORT" is for use in cyclic, no need to define it in .env
