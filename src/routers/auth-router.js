@@ -5,5 +5,7 @@ const { signup, login } = require("../controllers/auth-controller");
 //APIs
 router.post("/signup", signup);
 router.post("/login", login);
+//logout
+//refreshtoken
 
 module.exports = { router };

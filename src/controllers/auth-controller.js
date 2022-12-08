@@ -3,7 +3,7 @@ const httpStatus = require("http-status");
 const { hashPassword, comparePassword } = require("../services/auth-service");
 const jwt = require("jsonwebtoken");
 
-const signup = async (req, res) => {
+async function signup(req, res) {
   //create new User obj.
   const userInfor = { ...req.body };
   //hash password.
@@ -31,7 +31,16 @@ const signup = async (req, res) => {
     }
     res.sendStatus(httpStatus.CREATED); // 201 - CREATED
   });
-};
+}
+
+/*{
+    "name": "loo",
+    "email": "loo@hotmail.com",
+    "password": "123"    }
+  {
+    "name":"John",
+    "email":"hy@gmail.com",
+    "password":"123"    } */
 
 async function login(req, res) {
   const { email, password } = req.body;
@@ -59,19 +68,16 @@ async function login(req, res) {
     const { name, role } = foundUser;
     const tokenPayload = { name, role };
 
-    //generate access_token and refresh_token
-    const access_token = jwt.sign(
-      tokenPayload,
-      process.env.ACCESS_TOKEN_SECRET
-    );
-    const refresh_token = jwt.sign(
+    //generate accessToken and refreshToken
+    const accessToken = jwt.sign(tokenPayload, process.env.ACCESS_TOKEN_SECRET);
+    const refreshToken = jwt.sign(
       tokenPayload,
       process.env.REFRESH_TOKEN_SECRET
     );
 
-    //generate access_token and refresh_token
+    //generate accessToken and refreshToken
     // req.user = tokenPayload;
-    res.status(httpStatus.OK).json({ access_token, refresh_token }); //200
+    res.status(httpStatus.OK).json({ accessToken, refreshToken }); //200
   } catch (err) {
     res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
   }
