@@ -28,13 +28,14 @@ function generateRandomBytes() {
   /* generate 64 random bytes and convert to hex format.
   -Use this to generate "ACCESS_TOKEN_SECRET" and "REFRESH_TOKEN_SECRET" */
   const buffer = crypto.randomBytes(64).toString("hex");
-  console.log("buffer: ", buffer);
+  // console.log("buffer: ", buffer);
   return buffer;
 }
 
 async function verifyJWTAccessToken(token) {
   try {
     //return decoded payload object
+    //error if token mismatch or expired.
     return jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
   } catch (err) {
     throw err;
@@ -44,6 +45,7 @@ async function verifyJWTAccessToken(token) {
 async function verifyJWTRefreshToken(token) {
   try {
     //return decoded payload object
+    //error if token mismatch or expired.
     return jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
   } catch (err) {
     throw err;
@@ -75,6 +77,10 @@ function isTokenExpired(tokenExpiredAt_seconds) {
   return currTime - tokenExpiredAt_seconds > 0 ? true : false;
 }
 
+function generateBearerToken(bearer_Token) {
+  return bearer_Token.split(" ")[1];
+}
+
 module.exports = {
   hashPassword,
   comparePassword,
@@ -83,5 +89,5 @@ module.exports = {
   generateTokenPayload,
   generateAccessToken,
   generateRefreshToken,
-  isTokenExpired,
+  generateBearerToken,
 };

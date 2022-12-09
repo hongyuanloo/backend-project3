@@ -3,7 +3,7 @@ const httpStatus = require("http-status");
 const {
   verifyJWTAccessToken,
   generateTokenPayload,
-  isTokenExpired,
+  generateBearerToken,
 } = require("../services/auth-service");
 
 async function authenticateToken(req, res, next) {
@@ -14,15 +14,10 @@ async function authenticateToken(req, res, next) {
   */
   try {
     // extract token
-    const bearer_Token = req.headers.authorization;
-    const token = bearer_Token.split(" ")[1];
+    const token = generateBearerToken(req.headers.authorization);
 
-    // decoded decoded payload object
+    //decoded decoded payload object; error if token mismatch or expired.
     const userObj = await verifyJWTAccessToken(token);
-    // check if refreshToken has expired.
-    if (isTokenExpired(userObj.exp)) {
-      return res.sendStatus(httpStatus.UNAUTHORIZED);
-    }
 
     // get new tokenPayload
     const tokenPayload = generateTokenPayload(userObj);
