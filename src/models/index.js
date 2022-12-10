@@ -3,7 +3,8 @@ const eventModel = require("./event");
 const userModel = require("./user");
 
 //Config
-const mongoURI = "mongodb://localhost:27017/project3Database";
+const mongoURI =
+  process.env.MONGO_URI || "mongodb://localhost:27017/project3Database";
 const db = mongoose.connection;
 
 //Connect
