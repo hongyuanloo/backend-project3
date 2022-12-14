@@ -27,7 +27,7 @@ async function authenticateToken(req, res, next) {
     console.log("Token Authenticated!");
     next();
   } catch (err) {
-    res.sendStatus(httpStatus.UNAUTHORIZED); //401
+    res.status(httpStatus.UNAUTHORIZED).send({ err }); //401
   }
 }
 
