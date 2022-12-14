@@ -10,40 +10,40 @@ const {
   generateBearerToken,
 } = require("../services/auth-service");
 
-async function signup(req, res) {
-  //create new User obj.
-  const userInfor = { ...req.body };
-  //hash password.
-  try {
-    userInfor.password = await hashPassword(req.body.password);
-  } catch (err) {
-    console.log("hashPassword error: ", err);
-    return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
-  }
+// async function signup(req, res) {
+//   //create new User obj.
+//   const userInfor = { ...req.body };
+//   //hash password.
+//   console.log("userInfor: ", userInfor);
+//   try {
+//     userInfor.password = await hashPassword(req.body.password);
+//   } catch (err) {
+//     console.log("hashPassword error: ", err);
+//     return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
+//   }
 
-  //store newUser to db.
-  const newUser = new userModel(userInfor);
-  newUser.save((err) => {
-    if (err) {
-      const errorObj = { errCode: err.code, errMessage: "" };
-      switch (err.code) {
-        case 11000: //"name" or "email" already exist.
-          const key = Object.keys(err.keyValue)[0];
-          errorObj.errMessage = `'${err.keyValue[key]}' already exist. Select another ${key}.`;
-          return res.status(httpStatus.CONFLICT).json(errorObj); //409 - CONFLICT
+//   //store newUser to db.
+//   const newUser = new userModel(userInfor);
+//   newUser.save((err) => {
+//     if (err) {
+//       switch (err.code) {
+//         case 11000: //"name" or "email" already exist.
+//           const key = Object.keys(err.keyValue)[0];
+//           const errMessage = `'${err.keyValue[key]}' already exist. Select another ${key}.`;
+//           return res.status(httpStatus.CONFLICT).send(errMessage); //409 - CONFLICT
 
-        default:
-          return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
-      }
-    }
-    res.sendStatus(httpStatus.CREATED); // 201 - CREATED
-  });
-}
+//         default:
+//           return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
+//       }
+//     }
+//     res.sendStatus(httpStatus.CREATED); // 201 - CREATED
+//   });
+// }
 
 /*{
     "name": "loo",
     "email": "loo@hotmail.com",
-    "password": "123"    }
+    "password": "abc"    }
   {
     "name":"John",
     "email":"hy@gmail.com",
@@ -103,4 +103,4 @@ async function getNewAccessToken(req, res) {
   }
 }
 
-module.exports = { signup, login, getNewAccessToken };
+module.exports = { login, getNewAccessToken };
