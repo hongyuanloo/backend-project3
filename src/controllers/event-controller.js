@@ -4,53 +4,45 @@ const httpStatus = require("http-status");
 async function getAllEvents(req, res) {
   try {
     const result = await eventModel.find(req.query).exec();
-    res.status(httpStatus.OK).json(result); //200
+    res.status(httpStatus.OK).json(result);
   } catch (e) {
     console.error(e);
-    res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e);
   }
 }
 
 function createEvent(req, res) {
-  //create new Event obj.
-  const eventInfor = { ...req.body };
-
-  // console.log("createEvent: ", eventInfor);
-  const newEvent = new eventModel(eventInfor);
+  const newEvent = new eventModel(req.body);
   newEvent.save((err) => {
     if (err) {
-      // console.log(err);
       switch (err.code) {
         case 11000: //"title" already exist.
           const key = Object.keys(err.keyValue)[0];
           const errMessage = `'${err.keyValue[key]}' already exist. Select another ${key}.`;
-          return res.status(httpStatus.CONFLICT).send(errMessage); //409 - CONFLICT
+          return res.status(httpStatus.CONFLICT).send(errMessage);
 
         default:
           return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
       }
     }
-    res.sendStatus(httpStatus.CREATED); // 201 - CREATED
+    res.sendStatus(httpStatus.CREATED);
   });
 }
+
 async function getEventById(req, res) {
-  // console.log("getEventById: ", req.params.id);
   try {
     const result = await eventModel.findById(req.params.id).exec();
-    res.status(httpStatus.OK).json(result); //200
+    res.status(httpStatus.OK).json(result);
   } catch (e) {
     console.error(e);
-    res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e);
   }
 }
 
 async function updateEventById(req, res) {
-  //event parameters to be updated.
-  const updateInfor = { ...req.body };
-  // console.log("updateInfor: ", updateInfor);
   try {
     const result = await eventModel.updateOne({ _id: req.params.id }, req.body);
-    res.status(httpStatus.OK).json(result); //200
+    res.status(httpStatus.OK).json(result);
     //   {
     //     "acknowledged": true,
     //     "modifiedCount": 1,
@@ -60,22 +52,21 @@ async function updateEventById(req, res) {
     // }
   } catch (e) {
     console.error(e);
-    res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e);
   }
 }
 
 async function deleteEventById(req, res) {
-  // console.log("deleteEventById: ", req.params.id);
   try {
     const result = await eventModel.deleteOne({ _id: req.params.id });
-    res.status(httpStatus.OK).json(result); //200
+    res.status(httpStatus.OK).json(result);
     //   {
     //     "acknowledged": true,
     //     "deletedCount": 1
     // }
   } catch (e) {
     console.error(e);
-    res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e);
   }
 }
 module.exports = {

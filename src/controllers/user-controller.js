@@ -5,10 +5,10 @@ const { hashPassword } = require("../services/auth-service");
 async function getAllUsers(req, res) {
   try {
     const result = await userModel.find(req.query).exec();
-    res.status(httpStatus.OK).json(result); //200
+    res.status(httpStatus.OK).json(result);
   } catch (e) {
     console.error(e);
-    res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e);
   }
 }
 
@@ -19,9 +19,9 @@ async function createUser(req, res) {
   console.log("userInfor: ", userInfor);
   try {
     userInfor.password = await hashPassword(req.body.password);
-  } catch (err) {
-    console.log("hashPassword error: ", err);
-    return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
+  } catch (e) {
+    console.log("hashPassword error: ", e);
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e);
   }
 
   //store newUser to db.
@@ -32,13 +32,13 @@ async function createUser(req, res) {
         case 11000: //"name" or "email" already exist.
           const key = Object.keys(err.keyValue)[0];
           const errMessage = `'${err.keyValue[key]}' already exist. Select another ${key}.`;
-          return res.status(httpStatus.CONFLICT).send(errMessage); //409 - CONFLICT
+          return res.status(httpStatus.CONFLICT).send(errMessage);
 
         default:
           return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
       }
     }
-    res.sendStatus(httpStatus.CREATED); // 201 - CREATED
+    res.sendStatus(httpStatus.CREATED);
   });
 }
 
@@ -49,7 +49,7 @@ async function getUserById(req, res) {
     res.status(httpStatus.OK).json(result); //200
   } catch (e) {
     console.error(e);
-    res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e);
   }
 }
 
@@ -66,22 +66,21 @@ async function updateUserById(req, res) {
     // }
   } catch (e) {
     console.error(e);
-    res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e);
   }
 }
 
 async function deleteUserById(req, res) {
-  // console.log("deleteEventById: ", req.params.id);
   try {
     const result = await userModel.deleteOne({ _id: req.params.id });
-    res.status(httpStatus.OK).json(result); //200
+    res.status(httpStatus.OK).json(result);
     //   {
     //     "acknowledged": true,
     //     "deletedCount": 1
     // }
   } catch (e) {
     console.error(e);
-    res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e);
   }
 }
 module.exports = {
