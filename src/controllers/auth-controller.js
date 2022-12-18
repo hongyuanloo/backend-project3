@@ -59,16 +59,22 @@ async function login(req, res) {
   email: 'loo@hotmail.com',
   password: '$2b$10$N.ZUvX98A2n1F2YkJBdqL.k2keQPCD5iPWyX5zqyXxe73hzS/9QyG',
   role: 'user'
+  savedEvents: [{}...]
 }
        if not found, foundUser = null    */
-    const foundUser = await userModel.findOne(
-      { email: email.toLowerCase() },
-      "name password role"
-    );
+    const foundUser = await userModel
+      .findOne(
+        { email: email.toLowerCase() },
+        "_id name password role savedEvents"
+      )
+      .populate("savedEvents");
+
+    const { _id, name, password: userPassword, role, savedEvents } = foundUser;
+
     if (!foundUser) return res.sendStatus(httpStatus.NOT_FOUND); //404
 
     // check password match? ; Boolen result.
-    const passwordOK = await comparePassword(password, foundUser.password);
+    const passwordOK = await comparePassword(password, userPassword);
     if (!passwordOK) return res.sendStatus(httpStatus.FORBIDDEN); //403
 
     //generate tokenPayload
@@ -78,7 +84,11 @@ async function login(req, res) {
     const accessToken = generateAccessToken(tokenPayload);
     const refreshToken = generateRefreshToken(tokenPayload);
 
-    res.status(httpStatus.OK).json({ accessToken, refreshToken }); //200
+    res.status(httpStatus.OK).json({
+      accessToken,
+      refreshToken,
+      user: { _id, name, role, savedEvents },
+    }); //200
   } catch (err) {
     res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
   }

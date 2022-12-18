@@ -53,6 +53,23 @@ async function getUserById(req, res) {
   }
 }
 
+async function updateUserById(req, res) {
+  try {
+    const result = await userModel.updateOne({ _id: req.params.id }, req.body);
+    res.status(httpStatus.OK).json(result); //200
+    //   {
+    //     "acknowledged": true,
+    //     "modifiedCount": 1,
+    //     "upsertedId": null,
+    //     "upsertedCount": 0,
+    //     "matchedCount": 1
+    // }
+  } catch (e) {
+    console.error(e);
+    res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
+  }
+}
+
 async function deleteUserById(req, res) {
   // console.log("deleteEventById: ", req.params.id);
   try {
@@ -71,5 +88,6 @@ module.exports = {
   getAllUsers,
   createUser,
   getUserById,
+  updateUserById,
   deleteUserById,
 };

@@ -15,7 +15,7 @@ const eventSchema = new Schema(
     image_urls: { type: String },
     arts_groups: { type: String },
     price: { type: Number, required: true, min: 0 },
-    // is_featured: { type: Boolean },
+    is_featured: { type: Boolean, default: false },
     // createdBy: { type: Schema.Types.ObjectId, ref: "User" },
   },
   { timestamps: true }
