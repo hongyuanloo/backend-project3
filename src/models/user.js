@@ -7,7 +7,7 @@ const userSchema = new Schema(
     name: { type: String, required: true, unique: true, lowercase: true },
     email: { type: String, required: true, unique: true, lowercase: true },
     password: { type: String, required: true },
-    savedEvents: [{ type: Schema.Types.ObjectId, ref: "Event" }],
+    savedEvents: [{ type: Schema.Types.ObjectId, ref: "event" }],
     role: { type: String, default: ROLES.USER }, //admin or user
   },
   { timestamps: true }
