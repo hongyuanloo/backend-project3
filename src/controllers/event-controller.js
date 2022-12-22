@@ -25,7 +25,7 @@ function createEvent(req, res) {
           return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
       }
     }
-    res.sendStatus(httpStatus.CREATED);
+    res.status(httpStatus.CREATED).json(newEvent);
   });
 }
 

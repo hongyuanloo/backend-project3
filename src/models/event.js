@@ -8,7 +8,7 @@ const eventSchema = new Schema(
     // datetime_end: { type: Date },
     title: { type: String, required: true, unique: true },
     start: { type: Date, required: true },
-    end: { type: Date },
+    end: { type: Date, required: true },
     timezone: { type: String, default: "Asia/Singapore" },
     location: { type: String, required: true },
     description: { type: String, required: true },
@@ -24,7 +24,8 @@ const eventModel = mongoose.model("event", eventSchema);
 
 module.exports = eventModel;
 
-const aa = {
+/** Example of data:
+const example = {
   title: "Own Your Power to Glow",
   start: "2022-12-08T10:00:00",
   end: "2022-12-09T22:00:00",
@@ -36,3 +37,4 @@ const aa = {
   arts_groups: "Ion Orchard",
   price: 0,
 };
+*/
