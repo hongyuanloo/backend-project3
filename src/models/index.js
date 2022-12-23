@@ -14,7 +14,12 @@ mongoose.connect(mongoURI, () => {
 
 // Listener for db connection events
 db.on("error", (err) => console.log(err.message + " is Mongod not running?"));
-db.on("connected", () => console.log("mongo connected: ", mongoURI));
+db.on("connected", () =>
+  console.log(
+    "mongo connected: ",
+    process.env.MONGO_URI ? "Mongo Atlas cloud database." : mongoURI
+  )
+);
 db.on("disconnected", () => console.log("mongo disconnected"));
 
 module.exports = { eventModel, userModel };

@@ -8,7 +8,7 @@ async function getAllUsers(req, res) {
     res.status(httpStatus.OK).json(result);
   } catch (e) {
     console.error(e);
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e);
+    res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
   }
 }
 
@@ -20,8 +20,8 @@ async function createUser(req, res) {
   try {
     userInfor.password = await hashPassword(req.body.password);
   } catch (e) {
-    console.log("hashPassword error: ", e);
-    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e);
+    // console.log("hashPassword error: ", e);
+    return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
   }
 
   //store newUser to db.
@@ -46,17 +46,17 @@ async function getUserById(req, res) {
   // console.log("getEventById: ", req.params.id);
   try {
     const result = await userModel.findById(req.params.id).exec();
-    res.status(httpStatus.OK).json(result); //200
+    res.status(httpStatus.OK).json(result);
   } catch (e) {
     console.error(e);
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e);
+    res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
   }
 }
 
 async function updateUserById(req, res) {
   try {
     const result = await userModel.updateOne({ _id: req.params.id }, req.body);
-    res.status(httpStatus.OK).json(result); //200
+    res.status(httpStatus.OK).json(result);
     //   {
     //     "acknowledged": true,
     //     "modifiedCount": 1,
@@ -66,7 +66,7 @@ async function updateUserById(req, res) {
     // }
   } catch (e) {
     console.error(e);
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e);
+    res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
   }
 }
 
@@ -80,7 +80,7 @@ async function deleteUserById(req, res) {
     // }
   } catch (e) {
     console.error(e);
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e);
+    res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
   }
 }
 module.exports = {

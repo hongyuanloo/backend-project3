@@ -1,10 +1,6 @@
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
-const {
-  REFRESH_TOKEN_LIFESPAN,
-  ACCESS_TOKEN_LIFESPAN,
-} = require("../constants");
 
 async function hashPassword(password) {
   //return hashed password
@@ -28,7 +24,6 @@ function generateRandomBytes() {
   /* generate 64 random bytes and convert to hex format.
   -Use this to generate "ACCESS_TOKEN_SECRET" and "REFRESH_TOKEN_SECRET" */
   const buffer = crypto.randomBytes(64).toString("hex");
-  // console.log("buffer: ", buffer);
   return buffer;
 }
 
@@ -61,20 +56,15 @@ function generateTokenPayload(userObj) {
 function generateAccessToken(tokenPayload) {
   // generate token based on result of "generateTokenPayload(userObj)"
   return jwt.sign(tokenPayload, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: ACCESS_TOKEN_LIFESPAN,
+    expiresIn: Number(process.env.ACCESS_TOKEN_LIFESPAN),
   });
 }
 
 function generateRefreshToken(tokenPayload) {
   // generate token based on result of "generateTokenPayload(userObj)"
   return jwt.sign(tokenPayload, process.env.REFRESH_TOKEN_SECRET, {
-    expiresIn: REFRESH_TOKEN_LIFESPAN,
+    expiresIn: Number(process.env.REFRESH_TOKEN_LIFESPAN),
   });
-}
-
-function isTokenExpired(tokenExpiredAt_seconds) {
-  const currTime = Math.floor(Date.now() / 1000); // in seconds
-  return currTime - tokenExpiredAt_seconds > 0 ? true : false;
 }
 
 function generateBearerToken(bearer_Token) {

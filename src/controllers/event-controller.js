@@ -7,7 +7,7 @@ async function getAllEvents(req, res) {
     res.status(httpStatus.OK).json(result);
   } catch (e) {
     console.error(e);
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e);
+    res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
   }
 }
 
@@ -35,7 +35,7 @@ async function getEventById(req, res) {
     res.status(httpStatus.OK).json(result);
   } catch (e) {
     console.error(e);
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e);
+    res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
   }
 }
 
@@ -52,7 +52,7 @@ async function updateEventById(req, res) {
     // }
   } catch (e) {
     console.error(e);
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e);
+    res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
   }
 }
 
@@ -66,7 +66,7 @@ async function deleteEventById(req, res) {
     // }
   } catch (e) {
     console.error(e);
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e);
+    res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
   }
 }
 module.exports = {
