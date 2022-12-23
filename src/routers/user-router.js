@@ -1,5 +1,4 @@
 const express = require("express");
-const router = express.Router();
 const {
   getAllUsers,
   createUser,
@@ -7,14 +6,17 @@ const {
   updateUserById,
   deleteUserById,
 } = require("../controllers/user-controller");
+const { authenticateToken } = require("../middlewares/auth-middleware");
+
+const router = express.Router();
 
 //APIs
 router.post("/", createUser);
 
-//TODO authenticateToken for protected APIs
-router.get("/", getAllUsers);
-router.get("/:id", getUserById);
-router.put("/:id", updateUserById);
-router.delete("/:id", deleteUserById);
+//protected APIs
+router.get("/", authenticateToken, getAllUsers);
+router.get("/:id", authenticateToken, getUserById);
+router.put("/:id", authenticateToken, updateUserById);
+router.delete("/:id", authenticateToken, deleteUserById);
 
 module.exports = { router };

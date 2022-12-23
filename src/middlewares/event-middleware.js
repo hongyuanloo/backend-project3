@@ -20,7 +20,7 @@ async function removeEventfromUsersSavedEvent(req, res, next) {
     next();
   } catch (e) {
     console.error(e);
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e);
+    res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
   }
 }
 

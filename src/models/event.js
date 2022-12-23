@@ -3,9 +3,6 @@ const Schema = mongoose.Schema;
 
 const eventSchema = new Schema(
   {
-    // name: { type: String, required: true },
-    // datetime_start: { type: Date, required: true },
-    // datetime_end: { type: Date },
     title: { type: String, required: true, unique: true },
     start: { type: Date, required: true },
     end: { type: Date, required: true },
@@ -16,7 +13,6 @@ const eventSchema = new Schema(
     arts_groups: { type: String },
     price: { type: Number, required: true, min: 0 },
     is_featured: { type: Boolean, default: false },
-    // createdBy: { type: Schema.Types.ObjectId, ref: "User" },
   },
   { timestamps: true }
 );

@@ -1,5 +1,4 @@
 const express = require("express");
-const router = express.Router();
 const {
   getAllEvents,
   createEvent,
@@ -10,14 +9,22 @@ const {
 const {
   removeEventfromUsersSavedEvent,
 } = require("../middlewares/event-middleware");
+const { authenticateToken } = require("../middlewares/auth-middleware");
+
+const router = express.Router();
 
 //APIs
 router.get("/", getAllEvents);
 router.get("/:id", getEventById);
 
-//TODO authenticateToken for protected APIs
-router.post("/", createEvent);
-router.put("/:id", updateEventById);
-router.delete("/:id", removeEventfromUsersSavedEvent, deleteEventById);
+//protected APIs
+router.post("/", authenticateToken, createEvent);
+router.put("/:id", authenticateToken, updateEventById);
+router.delete(
+  "/:id",
+  authenticateToken,
+  removeEventfromUsersSavedEvent,
+  deleteEventById
+);
 
 module.exports = { router };

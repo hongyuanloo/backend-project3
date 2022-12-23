@@ -1,7 +1,6 @@
 const { userModel } = require("../models");
 const httpStatus = require("http-status");
 const {
-  hashPassword,
   comparePassword,
   generateTokenPayload,
   verifyJWTRefreshToken,
@@ -9,36 +8,6 @@ const {
   generateRefreshToken,
   generateBearerToken,
 } = require("../services/auth-service");
-
-// async function signup(req, res) {
-//   //create new User obj.
-//   const userInfor = { ...req.body };
-//   //hash password.
-//   console.log("userInfor: ", userInfor);
-//   try {
-//     userInfor.password = await hashPassword(req.body.password);
-//   } catch (err) {
-//     console.log("hashPassword error: ", err);
-//     return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
-//   }
-
-//   //store newUser to db.
-//   const newUser = new userModel(userInfor);
-//   newUser.save((err) => {
-//     if (err) {
-//       switch (err.code) {
-//         case 11000: //"name" or "email" already exist.
-//           const key = Object.keys(err.keyValue)[0];
-//           const errMessage = `'${err.keyValue[key]}' already exist. Select another ${key}.`;
-//           return res.status(httpStatus.CONFLICT).send(errMessage); //409 - CONFLICT
-
-//         default:
-//           return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
-//       }
-//     }
-//     res.sendStatus(httpStatus.CREATED); // 201 - CREATED
-//   });
-// }
 
 /*{
     "name": "loo",
@@ -69,13 +38,13 @@ async function login(req, res) {
       )
       .populate("savedEvents");
 
-    const { _id, name, password: userPassword, role, savedEvents } = foundUser;
+    if (!foundUser) return res.sendStatus(httpStatus.NOT_FOUND);
 
-    if (!foundUser) return res.sendStatus(httpStatus.NOT_FOUND); //404
+    const { _id, name, password: userPassword, role, savedEvents } = foundUser;
 
     // check password match? ; Boolen result.
     const passwordOK = await comparePassword(password, userPassword);
-    if (!passwordOK) return res.sendStatus(httpStatus.FORBIDDEN); //403
+    if (!passwordOK) return res.sendStatus(httpStatus.FORBIDDEN);
 
     //generate tokenPayload
     const tokenPayload = generateTokenPayload(foundUser);
@@ -88,7 +57,7 @@ async function login(req, res) {
       accessToken,
       refreshToken,
       user: { _id, name, role, savedEvents },
-    }); //200
+    });
   } catch (err) {
     res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
   }
@@ -107,9 +76,9 @@ async function getNewAccessToken(req, res) {
 
     //generate new accessToken
     const accessToken = generateAccessToken(tokenPayload);
-    res.status(httpStatus.OK).json({ accessToken }); //200
+    res.status(httpStatus.OK).json({ accessToken });
   } catch (err) {
-    res.sendStatus(httpStatus.UNAUTHORIZED); //401
+    res.sendStatus(httpStatus.UNAUTHORIZED);
   }
 }
 
